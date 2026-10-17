@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>
+      Crumb &amp; Crust | Pizza, Fast Food, Coffee &amp; Cakes · PWD, Islamabad
+    </title>
+    <meta
+      name="description"
+      content="Good food, good mood. Order pizza, burgers, wings, pasta and more from Crumb &amp; Crust in PWD, Islamabad, with live order tracking."
+    />
+    <meta name="theme-color" content="#f26a10" />
+    <link rel="icon" href="favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=DM+Sans:wght@400;500;700&family=Pacifico&display=swap"
+    />
+    <link rel="stylesheet" href="leaflet.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      try {
+        document.documentElement.dataset.theme =
+          JSON.parse(localStorage.getItem("cc_theme")) === "dark"
+            ? "dark"
+            : "light";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <!-- Icon sprite: used everywhere as <svg class="i"><use href="#i-name"/></svg> -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-bag" viewBox="0 0 24 24">
+        <path d="M6 7h12l1 13H5L6 7z" />
+        <path d="M9 7a3 3 0 0 1 6 0" />
+      </symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24">
+        <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />
+      </symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4" />
+        <path
+          d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"
+        />
+      </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24">
+        <path
+          d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"
+        />
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" /></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6L6 18" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" />
+        <path d="M20 20l-3.5-3.5" />
+      </symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24">
+        <path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z" />
+        <circle cx="12" cy="9.5" r="2.5" />
+      </symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24">
+        <path
+          d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"
+        />
+      </symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="M3 7l9 6 9-6" />
+      </symbol>
+      <symbol id="i-ig" viewBox="0 0 24 24">
+        <rect x="4" y="4" width="16" height="16" rx="5" />
+        <circle cx="12" cy="12" r="3.8" />
+        <circle cx="17" cy="7" r=".6" />
+      </symbol>
+      <symbol id="i-fb" viewBox="0 0 24 24">
+        <path
+          d="M14 8h3V4h-3a4 4 0 0 0-4 4v2.5H7v4h3V21h4v-6.5h3l1-4h-4V8.5A.5.5 0 0 1 14 8z"
+        />
+      </symbol>
+      <symbol id="i-wa" viewBox="0 0 24 24">
+        <path d="M4 20l1.2-4.1A8 8 0 1 1 8.3 18.9L4 20z" />
+        <path
+          d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.7-2-1-1 .9a4 4 0 0 1-2-2l.9-1-1-2L9 8.5z"
+        />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="M5 12.5l4.5 4.5L19 7.5" />
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" />
+      </symbol>
+      <symbol id="i-left" viewBox="0 0 24 24">
+        <path d="M15 5l-7 7 7 7" />
+      </symbol>
+      <symbol id="i-right" viewBox="0 0 24 24">
+        <path d="M9 5l7 7-7 7" />
+      </symbol>
+      <symbol id="i-scooter" viewBox="0 0 24 24">
+        <circle cx="6" cy="17" r="3" />
+        <circle cx="18" cy="17" r="3" />
+        <path d="M6 17h5l3-7h3l1 7M14 10l-1-4h-3" />
+      </symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24">
+        <path d="M13 3L5 13h6l-1 8 8-10h-6l1-8z" />
+      </symbol>
+    </svg>
+
+    <a class="skip" href="#menu">Skip to the menu</a>
+
+    <!-- ============================ HEADER ============================ -->
+    <header class="top" id="top">
+      <a class="brand" href="#top" aria-label="Crumb &amp; Crust home">
+        <img src="logo.webp" alt="" width="46" height="46" /><span
+          >Crumb <em>&amp;</em> Crust</span
+        >
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#deals">Deals</a><a href="#menu">Menu</a
+        ><a href="#story">Our story</a><a href="#find">Find us</a>
+      </nav>
+      <div class="top-actions">
+        <div class="seg" role="group" aria-label="Order type">
+          <button type="button" data-type="delivery" aria-pressed="true">
+            Delivery
+          </button>
+          <button type="button" data-type="pickup" aria-pressed="false">
+            Pickup
+          </button>
+        </div>
+        <button class="track-pill" id="trackPill" type="button" hidden>
+          <span class="pulse"></span><span id="trackPillText">Track order</span>
+        </button>
+        <button
+          class="theme-btn"
+          id="themeBtn"
+          type="button"
+          aria-pressed="false"
+          aria-label="Switch to night mode"
+        >
+          <svg class="i moon"><use href="#i-moon" /></svg
+          ><svg class="i sun"><use href="#i-sun" /></svg
+          ><span id="themeLabel">Night mode</span>
+        </button>
+        <button
+          class="cart-btn"
+          id="cartBtn"
+          type="button"
+          aria-label="Open your tray"
+        >
+          <svg class="i"><use href="#i-bag" /></svg
+          ><span class="cart-label">Tray</span><b id="cartCount">0</b>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============================ HERO ============================ -->
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <p class="kicker">Pizza · Fast food · Coffee · Cakes</p>
+            <h1>Good food,<span class="script">good mood.</span></h1>
+            <p class="lead">
+              Baked with passion, crafted for cravings. Order from our PWD
+              kitchen, then watch your food travel to you on a live map.
+            </p>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#menu">Order now</a>
+              <a class="btn btn-ghost" href="#find">Find our kitchen</a>
+            </div>
+            <ul class="perks">
+              <li>
+                <svg class="i"><use href="#i-bolt" /></svg>Live order tracking
+              </li>
+              <li>
+                <svg class="i"><use href="#i-scooter" /></svg>Delivery &amp;
+                pickup
+              </li>
+              <li>
+                <svg class="i"><use href="#i-pin" /></svg>PWD, Islamabad
+              </li>
+            </ul>
+          </div>
+
+          <div class="stage-wrap">
+            <div
+              class="stage"
+              id="stage"
+              aria-roledescription="carousel"
+              aria-label="Featured dishes"
+            >
+              <div class="stage-ring"></div>
+              <svg class="stage-text" viewBox="0 0 400 400" aria-hidden="true">
+                <defs>
+                  <path
+                    id="ringPath"
+                    d="M200,200 m-186,0 a186,186 0 1,1 372,0 a186,186 0 1,1 -372,0"
+                  />
+                </defs>
+                <text>
+                  <textPath
+                    href="#ringPath"
+                    textLength="1160"
+                    lengthAdjust="spacing"
+                  >
+                    GOOD FOOD · GOOD MOOD · PIZZA · FAST FOOD · COFFEE · CAKES ·
+                  </textPath>
+                </text>
+              </svg>
+              <div class="stage-plate"></div>
+              <img
+                class="stage-img"
+                id="heroImg"
+                src="double.webp"
+                alt="Double Patty Smash Burger"
+              />
+              <img
+                class="float a"
+                src="fries.webp"
+                alt=""
+                loading="lazy"
+              />
+              <img
+                class="float b"
+                src="garlic.webp"
+                alt=""
+                loading="lazy"
+              />
+              <img
+                class="float c"
+                src="nuggets.webp"
+                alt=""
+                loading="lazy"
+              />
+              <div class="stage-cap">
+                <button
+                  class="round-btn"
+                  id="heroPrev"
+                  type="button"
+                  aria-label="Previous dish"
+                >
+                  <svg class="i"><use href="#i-left" /></svg>
+                </button>
+                <div>
+                  <b id="heroName">Double Patty Smash Burger</b
+                  ><small id="heroPrice"></small>
+                </div>
+                <button
+                  class="btn btn-primary sm"
+                  id="heroOrder"
+                  type="button"
+                  data-add="double"
+                >
+                  Order
+                </button>
+                <button
+                  class="round-btn"
+                  id="heroNext"
+                  type="button"
+                  aria-label="Next dish"
+                >
+                  <svg class="i"><use href="#i-right" /></svg>
+                </button>
+              </div>
+            </div>
+            <div class="dots" id="heroDots"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>Pizza</span><span>Fast Food</span><span>Coffee</span
+          ><span>Cakes</span><span>Good Food, Good Mood</span> <span>Pizza</span
+          ><span>Fast Food</span><span>Coffee</span><span>Cakes</span
+          ><span>Good Food, Good Mood</span> <span>Pizza</span
+          ><span>Fast Food</span><span>Coffee</span><span>Cakes</span
+          ><span>Good Food, Good Mood</span>
+        </div>
+      </div>
+
+      <!-- ============================ DEALS ============================ -->
+      <section class="deals" id="deals">
+        <div class="wrap">
+          <header class="sec-head">
+            <p class="kicker alt">Money saving deals</p>
+            <h2>C&amp;C Deals</h2>
+          </header>
+          <div class="coupons" id="dealGrid"></div>
+        </div>
+      </section>
+
+      <!-- ============================ MENU ============================ -->
+      <section class="menu wrap" id="menu">
+        <header class="sec-head">
+          <p class="kicker">Baked with passion</p>
+          <h2>The menu</h2>
+        </header>
+        <div class="tools">
+          <label class="search"
+            ><svg class="i"><use href="#i-search" /></svg
+            ><input
+              id="q"
+              type="search"
+              placeholder="Search pizza, wings, pasta…"
+              aria-label="Search the menu"
+          /></label>
+          <select id="sort" aria-label="Sort the menu">
+            <option value="menu">Menu order</option>
+            <option value="low">Price: low to high</option>
+            <option value="high">Price: high to low</option>
+          </select>
+          <button
+            class="chip-btn"
+            id="favOnly"
+            type="button"
+            aria-pressed="false"
+          >
+            <svg class="i"><use href="#i-heart" /></svg>Favourites
+          </button>
+        </div>
+        <nav class="dock" id="dock" aria-label="Menu categories"></nav>
+        <div id="menuList"></div>
+      </section>
+
+      <!-- ============================ STORY ============================ -->
+      <section class="story" id="story">
+        <div class="wrap story-grid">
+          <div class="story-badge">
+            <img
+              src="logo.webp"
+              alt="Crumb &amp; Crust logo: good food, good mood"
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <p class="kicker alt">Our story</p>
+            <h2>Once upon a C&amp;C</h2>
+            <p>
+              Every great story begins with a dream, and Crumb &amp; Crust began
+              with a simple one: to create food that brings people together and
+              turns every meal into a memorable experience.
+            </p>
+            <p>
+              From the very beginning, our passion has been to serve fresh,
+              flavorful, and delicious food made with quality ingredients and a
+              whole lot of love. Every recipe is carefully crafted to bring
+              together the perfect balance of taste, texture, and satisfaction.
+            </p>
+            <blockquote>
+              “Because good food fills the stomach… but great food fills the
+              heart.”
+            </blockquote>
+            <div class="values">
+              <div>Baked with passion</div>
+              <div>Crafted for cravings</div>
+              <div>Good food, good mood</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ FIND US ============================ -->
+      <section class="find wrap" id="find">
+        <header class="sec-head">
+          <p class="kicker">Our PWD kitchen</p>
+          <h2>Find us, live</h2>
+        </header>
+        <div class="find-grid">
+          <div
+            class="map"
+            id="branchMap"
+            aria-label="Map showing the Crumb &amp; Crust PWD branch"
+          ></div>
+          <div class="find-card">
+            <h3>Crumb &amp; Crust, PWD</h3>
+            <p class="addr">
+              <svg class="i"><use href="#i-pin" /></svg>Main Entrance Barrier,
+              PWD,<br />near Fresco Sweets, Islamabad
+            </p>
+            <ul class="contacts">
+              <li>
+                <svg class="i"><use href="#i-phone" /></svg
+                ><a href="tel:+92518772777">051-87 72 777</a> /
+                <a href="tel:+923370772777">0337 07 72 777</a>
+              </li>
+              <li>
+                <svg class="i"><use href="#i-scooter" /></svg>Home delivery
+                helpline: <a href="tel:+923048772777">0304 87 72 777</a>
+              </li>
+            </ul>
+            <div class="find-actions">
+              <a
+                class="btn btn-primary"
+                id="dirBtn"
+                target="_blank"
+                rel="noopener"
+                href="https://www.google.com/maps/dir/?api=1&amp;destination=Crumb+%26+Crust+PWD+Islamabad"
+                >Get directions</a
+              >
+              <button class="btn btn-ghost" id="locBtn" type="button">
+                How far am I?
+              </button>
+            </div>
+            <p class="find-out" id="findOut" role="status"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================ FOOTER ============================ -->
+    <footer class="foot">
+      <div class="wrap foot-grid">
+        <div>
+          <a class="brand light" href="#top"
+            ><img src="logo.webp" alt="" width="46" height="46" /><span
+              >Crumb <em>&amp;</em> Crust</span
+            ></a
+          >
+          <p class="foot-tag">Baked with Passion. Crafted for Cravings.</p>
+          <div class="social">
+            <a href="#" aria-label="Instagram"
+              ><svg class="i"><use href="#i-ig" /></svg
+            ></a>
+            <a href="#" aria-label="Facebook"
+              ><svg class="i"><use href="#i-fb" /></svg
+            ></a>
+            <a
+              href="https://wa.me/923370772777"
+              target="_blank"
+              rel="noopener"
+              aria-label="WhatsApp"
+              ><svg class="i"><use href="#i-wa" /></svg
+            ></a>
+          </div>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li>
+              <svg class="i"><use href="#i-phone" /></svg
+              ><a href="tel:+92518772777">051-87 72 777</a> /
+              <a href="tel:+923370772777">0337 07 72 777</a>
+            </li>
+            <li>
+              <svg class="i"><use href="#i-scooter" /></svg>Helpline:
+              <a href="tel:+923048772777">0304 87 72 777</a>
+            </li>
+            <li>
+              <svg class="i"><use href="#i-mail" /></svg
+              ><a href="mailto:hello@crumbandcrust.pk"
+                >hello@crumbandcrust.pk</a
+              >
+            </li>
+            <li>
+              <svg class="i"><use href="#i-pin" /></svg>Main Entrance Barrier,
+              PWD, near Fresco Sweets
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#deals">Deals</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#story">Our story</a></li>
+            <li><a href="#find">Find us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="wrap legal">
+        <span>© 2026 Crumb &amp; Crust. All rights reserved.</span
+        ><span>Good food, good mood.</span>
+      </div>
+    </footer>
+
+    <a
+      class="wa-float"
+      href="https://wa.me/923370772777?text=Hi%20Crumb%20%26%20Crust!"
+      target="_blank"
+      rel="noopener"
+      aria-label="Chat on WhatsApp"
+      ><svg class="i"><use href="#i-wa" /></svg
+    ></a>
+
+    <!-- ============================ TRAY (CART) DRAWER ============================ -->
+    <div class="scrim" id="scrim"></div>
+    <aside
+      class="drawer"
+      id="cartDrawer"
+      aria-hidden="true"
+      aria-label="Your tray"
+    >
+      <div class="drawer-head">
+        <h2>Your tray</h2>
+        <button
+          class="icon-btn"
+          type="button"
+          data-close
+          aria-label="Close tray"
+        >
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </div>
+      <div class="drawer-body" id="cartBody"></div>
+      <div class="drawer-foot" id="cartFoot"></div>
+    </aside>
+
+    <!-- ============================ ITEM POPUP ============================ -->
+    <div
+      class="modal"
+      id="itemModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="itemName"
+    >
+      <div class="sheet item-sheet">
+        <button
+          class="icon-btn sheet-x"
+          type="button"
+          data-close
+          aria-label="Close"
+        >
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+        <div class="item-art"><img id="itemImg" alt="" /></div>
+        <div class="item-info">
+          <h3 id="itemName"></h3>
+          <p id="itemDesc"></p>
+          <fieldset class="sizes" id="itemSizes">
+            <legend>Choose a size</legend>
+          </fieldset>
+          <label class="field"
+            >Special requests<textarea
+              id="itemNote"
+              maxlength="100"
+              rows="2"
+              placeholder="No onions, extra sauce…"
+            ></textarea>
+          </label>
+          <div class="item-foot">
+            <div class="stepper">
+              <button type="button" id="qtyMinus" aria-label="Less">
+                <svg class="i"><use href="#i-minus" /></svg></button
+              ><output id="itemQty">1</output
+              ><button type="button" id="qtyPlus" aria-label="More">
+                <svg class="i"><use href="#i-plus" /></svg>
+              </button>
+            </div>
+            <button class="btn btn-primary grow" type="button" id="itemAdd">
+              Add to tray · <b id="itemTotal"></b>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ CHECKOUT ============================ -->
+    <div
+      class="modal"
+      id="checkoutModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coTitle"
+    >
+      <form class="sheet checkout-sheet" id="checkoutForm" novalidate>
+        <button
+          class="icon-btn sheet-x"
+          type="button"
+          data-close
+          aria-label="Close"
+        >
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+        <h3 id="coTitle">Checkout</h3>
+        <div class="seg seg-lg" role="group" aria-label="Order type">
+          <button type="button" data-type="delivery" aria-pressed="true">
+            Delivery
+          </button>
+          <button type="button" data-type="pickup" aria-pressed="false">
+            Pickup
+          </button>
+        </div>
+        <div class="grid2">
+          <label class="field"
+            >Your name<input id="fName" autocomplete="name" required
+          /></label>
+          <label class="field"
+            >Phone<input
+              id="fPhone"
+              type="tel"
+              autocomplete="tel"
+              placeholder="03xx xxxxxxx"
+              required
+          /></label>
+        </div>
+        <div id="deliveryFields">
+          <label class="field"
+            >Delivery address<textarea
+              id="fAddress"
+              rows="2"
+              placeholder="House, street, block…"
+            ></textarea>
+          </label>
+          <div class="picker">
+            <div class="picker-bar">
+              <span id="pickInfo">Tap the map to drop your pin.</span
+              ><button class="btn btn-ghost sm" type="button" id="useLoc">
+                Use my location
+              </button>
+            </div>
+            <div class="map mini" id="pickMap"></div>
+          </div>
+        </div>
+        <p class="pickup-info" id="pickupInfo" hidden>
+          <svg class="i"><use href="#i-pin" /></svg>Pick up at Main Entrance
+          Barrier, PWD, near Fresco Sweets.
+        </p>
+        <fieldset class="pay">
+          <legend>Payment</legend>
+          <label class="radio"
+            ><input type="radio" name="pay" value="Cash" checked /><span
+              >Cash</span
+            ></label
+          >
+          <label class="radio"
+            ><input
+              type="radio"
+              name="pay"
+              value="Card on delivery / at counter"
+            /><span>Card on delivery or at the counter</span></label
+          >
+        </fieldset>
+        <label class="field"
+          >Order notes<input
+            id="fNote"
+            maxlength="120"
+            placeholder="Call on arrival, gate colour…"
+        /></label>
+        <div class="summary" id="coSummary"></div>
+        <p class="err" id="coErr" role="alert"></p>
+        <div class="co-actions">
+          <button class="btn btn-primary grow" type="submit">
+            Place order
+          </button>
+          <button class="btn btn-wa" type="button" id="waOrder">
+            <svg class="i"><use href="#i-wa" /></svg>Order on WhatsApp
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ============================ LIVE TRACKER ============================ -->
+    <div
+      class="modal"
+      id="trackModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="trkTitle"
+    >
+      <div class="sheet track-sheet">
+        <div class="track-panel">
+          <div class="track-head">
+            <div>
+              <p class="kicker" id="trkCode">Order</p>
+              <h3 id="trkTitle">Order placed</h3>
+              <p id="trkNote"></p>
+            </div>
+            <button
+              class="icon-btn"
+              type="button"
+              data-close
+              aria-label="Minimise tracker"
+            >
+              <svg class="i"><use href="#i-x" /></svg>
+            </button>
+          </div>
+          <div class="eta">
+            <div>
+              <small>Estimated arrival</small><strong id="trkEta">–</strong>
+            </div>
+            <span class="demo-chip" id="trkDemo">Live</span>
+          </div>
+          <div class="meter"><span id="trkBar"></span></div>
+          <ol class="timeline" id="trkSteps"></ol>
+          <div class="trk-items" id="trkItems"></div>
+          <div class="trk-actions">
+            <a class="btn btn-ghost" id="trkCall" href="tel:+923048772777"
+              ><svg class="i"><use href="#i-phone" /></svg>Call kitchen</a
+            >
+            <button class="btn btn-primary" id="trkReorder" type="button">
+              Order again
+            </button>
+          </div>
+        </div>
+        <div class="map" id="trkMap" aria-label="Live map of your order"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="leaflet.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
